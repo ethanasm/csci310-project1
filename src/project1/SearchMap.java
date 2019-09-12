@@ -4,64 +4,46 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
-import project1.FlightMap.Route;
+import java.util.ArrayList;
+import java.util.List;
 
-@SuppressWarnings("serial")
-class FileFormatException extends Exception {
-	public FileFormatException() {}
-}
+import project1.FlightMap.Route;
 
 public class SearchMap {
 	
-	public static void main(int argv, String[] args) throws IllegalArgumentException {
-		
-		if (argv != 3) {
+	
+	private static FlightMap parseFile(String filename) {
+		List<Route> routes = new ArrayList<Route>();
+		char origin = 0;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			
+			String line = br.readLine();
+			origin = line.charAt(0);
+			
+			line = br.readLine();
+			while (line != null) {
+				String[] routeInfo = line.split(" ");
+				routes.add(new Route(routeInfo[0].charAt(0),routeInfo[1].charAt(0),Integer.parseInt(routeInfo[2])));
+				line = br.readLine();
+			}
+			br.close();
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("The file " + filename + " could not be found.");
+		} catch (IOException ioe) {
+			System.out.println("ioe: " + ioe.getMessage());
+		}
+		return new FlightMap(routes,origin);
+	}
+	
+	public static void main(String[] args) throws IllegalArgumentException {
+
+		if (args.length != 1) {
 			System.out.print("Incorrect number of command line arguments");
 			throw new IllegalArgumentException();
 		}
 		
-		FileReader fr;
-		BufferedReader br;
-		String line;
-		char origin;
-		
-		try {
-			fr = new FileReader(args[1]);
-			br = new BufferedReader(fr);
-			line = br.readLine();
-			
-			
-			if (line == null || !Character.isLetter(line.charAt(0))) {
-				br.close();
-				throw new FileFormatException();
-			}
-			origin = line.charAt(0);
-			line = br.readLine();
-			while (line != null) {
-				String[] routeInfo = line.split(" ");
-				if (routeInfo.length != 3) {
-					br.close();
-					throw new FileFormatException();
-				}
-				
-				line = br.readLine();
-			}
-			
-			do {
-				line = br.readLine();
-				String[] split = line.split(" ");
-			} while (line != null);
-			
-		} catch (FileNotFoundException fnfe) {
-			System.out.println("The file " + args[2] + " could not be found.");
-		} catch (IOException ioe) {
-			System.out.println("ioe: " + ioe.getMessage());
-		} catch (Exception e) {
-			System.out.println("e: " + e.getMessage());
-		}
-		
-		
-		
+		FlightMap fm = parseFile(args[0]);
 		
 		
 	}

@@ -30,11 +30,6 @@ public class FlightMap {
 	
 	public FlightMap(List<Route> routes, char origin) {
 		adj = new ArrayList<>();
-		
-		for (Route current : routes) {
-			Pair<Character,List<Character>> newp = new Pair<Character,List<Character>>(Character.valueOf(current.src), new ArrayList<>());
 			
-		}
-		
 	}
 }
