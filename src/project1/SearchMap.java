@@ -1,50 +1,78 @@
 package project1;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.IllegalArgumentException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import project1.FlightMap.Route;
 
 public class SearchMap {
 	
 	
 	private static FlightMap parseFile(String filename) {
-		List<Route> routes = new ArrayList<Route>();
+		List<String> routes = new ArrayList<String>();
 		char origin = 0;
+		BufferedReader br = null;
 		try {
-			BufferedReader br = new BufferedReader(new FileReader(filename));
+			br = new BufferedReader(new FileReader(filename));
 			
 			String line = br.readLine();
 			origin = line.charAt(0);
 			
 			line = br.readLine();
 			while (line != null) {
-				String[] routeInfo = line.split(" ");
-				routes.add(new Route(routeInfo[0].charAt(0),routeInfo[1].charAt(0),Integer.parseInt(routeInfo[2])));
+				routes.add(line);
 				line = br.readLine();
 			}
-			br.close();
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("The file " + filename + " could not be found.");
 		} catch (IOException ioe) {
 			System.out.println("ioe: " + ioe.getMessage());
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ioe) {
+				System.out.println("ioe: " + ioe.getMessage());
+			} 
+			
 		}
-		return new FlightMap(routes,origin);
+		return new FlightMap(routes, origin);
+	}
+	
+	private static void writeToFile(ArrayList<String> routes, String filename, FlightMap fm) {
+		PrintWriter pw = null;
+		try {
+			File file = new File(filename);
+			pw = new PrintWriter(file);
+			pw.printf("%-15s %-24s %-15s%n", "Destination", "Flight route from " + fm.getOrigin() , "Total Cost");
+			for (String s : routes) {
+				String[] sp = s.split(" ");
+				pw.printf("%-15s %-24s %-15s%n", sp[0], sp[1], sp[2]);
+			}
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("The file " + filename + " could not be found.");
+		} finally {
+			if (pw != null) {
+				pw.close();
+			}
+		}
+		
 	}
 	
 	public static void main(String[] args) throws IllegalArgumentException {
 
-		if (args.length != 1) {
+		if (args.length != 2) {
 			System.out.print("Incorrect number of command line arguments");
 			throw new IllegalArgumentException();
 		}
 		
 		FlightMap fm = parseFile(args[0]);
-		
-		
+		ArrayList<String> routes = fm.getRoutesFromOrigin();
+		writeToFile(routes, args[1], fm);
 	}
 }
