@@ -1,39 +1,58 @@
 package project1;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.PriorityQueue;
 
 
 public class FlightMap {
 	
 	private char origin;
-	private ArrayList<ArrayList<Route>> adj;;
-	
-	private class Route {
-		char dest;
-		int cost;
-		
-		Route(char dest, int cost) {
-			this.dest = dest;
-			this.cost = cost;
-		}
-	}
+	private ArrayList<City> cities;
 	
 	
 	public FlightMap(List<String> routes, char origin) {
-		adj = new ArrayList<ArrayList<Route>>();
-		for (int i = 0; i < 52; i++) {
-			adj.add(null);
-		}
-		for (int i = 0; i < routes.size(); i++) {
-			String[] route = routes.get(i).split(" ");
-			char src = route[0].charAt(0);
-			char dest = route[1].charAt(0);
+		cities = new ArrayList<City>();
+		for (String s : routes) {
+			String[] route = s.split(" ");
+			char srcName = route[0].charAt(0);
+			char destName = route[1].charAt(0);
 			int cost = Integer.parseInt(route[2]);
-			int index = charToInteger(src);
-			if (adj.get(index) == null) {
-				adj.set(index, new ArrayList<>());
+			City src = null;
+			City dest = null;
+			boolean addDest = false;
+			for (City c : cities) {
+				if (c.getName() == srcName) {
+					if (dest == null) {
+						for (City d : cities) {
+							if (d.getName() == destName) {
+								d = dest;
+							}
+						}
+						if (dest == null) {
+							dest = new City(destName);
+							addDest = true;
+						}
+							
+					}
+					c.addRoute(new Route(src,dest,cost));
+					src = c;
+				}
+					
+				if (c.getName() == destName)
+					dest = c;
 			}
-			adj.get(index).add(new Route(dest, cost));
+			if (addDest)
+				cities.add(dest);
+			if (src == null) {
+				src = new City(srcName);
+				if (dest == null) {
+					dest = new City(destName);
+					cities.add(dest);
+				}
+				src.addRoute(new Route(src,dest,cost));
+				cities.add(src);
+			}
 		}
 		this.origin = origin;
 	}
@@ -46,35 +65,55 @@ public class FlightMap {
 		return this.origin;
 	}
 	
-	public ArrayList<String> getRoutesFromOrigin() {
-		boolean[] visited = new boolean[52];
-		return DFS(charToInteger(this.origin), new ArrayList<String>(), 0, Character.toString(origin), visited);
+	public void computeRoutesFromOrigin() {
+		City city = null;
+		for (City c : cities) {
+			if (c.getName() == origin)
+				city = c;
+		}
+		city.setCost(0);
+		PriorityQueue<City> pq = new PriorityQueue<>();
+		pq.add(city);
+		city.setVisited(true);
+		while (!pq.isEmpty()) {
+			City next = pq.poll();
+			for (Route r : next.getRoutes()) {
+				City neighbor = r.getDest();
+				if (!neighbor.isVisited()) {
+					int newCost = next.getCost() + r.getCost();
+					if (newCost < neighbor.getCost()) {
+						pq.remove(neighbor);
+						neighbor.setCost(newCost);
+						neighbor.setPred(next);
+						pq.add(neighbor);
+					}
+				}
+			}
+			next.setVisited(true);
+		}
 	}
 	
-	private ArrayList<String> DFS(int v, ArrayList<String> routes, int cost, String route, boolean[] visited) {
-		
-		visited[v] = true;
-		if (this.adj.get(v) == null) {
-			return routes;
-		}
-		
-		for (Route r : this.adj.get(v)) {
-			int w = charToInteger(r.dest);
-			if (!visited[w]) {
-				String prev = route;
-				route += ("," + r.dest);
-				cost += r.cost;
-				routes.add(r.dest + " " + route + " $" + cost);
-				DFS(w,routes,cost,route,visited);
-				cost -= r.cost;
-				route = prev;
+	public List<List<City>> getAllShortestPaths() {
+		List<List<City>> allPaths = new ArrayList<List<City>>();
+		for (City c : cities) {
+			if (c.getName() != origin) {
+				List<City> path = getShortestPathTo(c);
+				if (path != null)
+					allPaths.add(path);
 			}
 		}
-		return routes;
+		return allPaths;
 	}
 	
-	private int charToInteger(char c) {
-		boolean isUpper = Character.isUpperCase(c);
-		return isUpper ? c - 'A' + 26 : c - 'a';
+	public List<City> getShortestPathTo(City dest) {
+		List<City> path = new ArrayList<>();
+		
+		for (City before = dest; before != null; before = before.getPred()) {
+			path.add(before);
+		}
+		
+		Collections.reverse(path);
+		return path;
 	}
+	
 }

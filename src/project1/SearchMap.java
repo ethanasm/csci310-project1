@@ -11,7 +11,6 @@ import java.util.List;
 
 public class SearchMap {
 	
-	
 	private static FlightMap parseFile(String filename) {
 		List<String> routes = new ArrayList<String>();
 		char origin = 0;
@@ -44,15 +43,22 @@ public class SearchMap {
 		return new FlightMap(routes, origin);
 	}
 	
-	private static void writeToFile(ArrayList<String> routes, String filename, FlightMap fm) {
+	private static void writeToFile(List<List<City>> routes, String filename, FlightMap fm) {
 		PrintWriter pw = null;
 		try {
 			File file = new File(filename);
 			pw = new PrintWriter(file);
-			pw.printf("%-15s %-24s %-15s%n", "Destination", "Flight route from " + fm.getOrigin() , "Total Cost");
-			for (String s : routes) {
-				String[] sp = s.split(" ");
-				pw.printf("%-15s %-24s %-15s%n", sp[0], sp[1], sp[2]);
+			pw.printf("%-18s %-26s %-12s%n", "Destination", "Flight route from " + fm.getOrigin() , "Total Cost");
+			for (List<City> l : routes) {
+				if (l.get(l.size() - 1).getCost() == Integer.MAX_VALUE)
+					continue;	
+				String s = "";
+				for (int i = 0; i < l.size(); i++) {
+					s += l.get(i).getName();
+					if (i + 1 != l.size())
+						s += ", ";
+				}
+				pw.printf("%-18s %-26s %-12s%n", l.get(l.size() - 1).getName(), s, "$" + l.get(l.size() - 1).getCost());
 			}
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("The file " + filename + " could not be found.");
@@ -61,18 +67,17 @@ public class SearchMap {
 				pw.close();
 			}
 		}
-		
 	}
 	
 	public static void main(String[] args) throws IllegalArgumentException {
-
 		if (args.length != 2) {
 			System.out.print("Incorrect number of command line arguments");
 			throw new IllegalArgumentException();
 		}
 		
 		FlightMap fm = parseFile(args[0]);
-		ArrayList<String> routes = fm.getRoutesFromOrigin();
+		fm.computeRoutesFromOrigin();
+		List<List<City>> routes = fm.getAllShortestPaths();
 		writeToFile(routes, args[1], fm);
 	}
 }
