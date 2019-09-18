@@ -69,10 +69,10 @@ public class SearchMap {
 		}
 	}
 	
-	public static void main(String[] args) throws IllegalArgumentException {
+	public static void main(String[] args) {
+		
 		if (args.length != 2) {
-			System.out.print("Incorrect number of command line arguments");
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Two command line arguments required");
 		}
 		
 		FlightMap fm = parseFile(args[0]);

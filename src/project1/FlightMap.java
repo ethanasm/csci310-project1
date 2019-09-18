@@ -18,44 +18,25 @@ public class FlightMap {
 			char srcName = route[0].charAt(0);
 			char destName = route[1].charAt(0);
 			int cost = Integer.parseInt(route[2]);
-			City src = null;
-			City dest = null;
-			boolean addDest = false;
-			for (City c : cities) {
-				if (c.getName() == srcName) {
-					if (dest == null) {
-						for (City d : cities) {
-							if (d.getName() == destName) {
-								d = dest;
-							}
-						}
-						if (dest == null) {
-							dest = new City(destName);
-							addDest = true;
-						}
-							
-					}
-					c.addRoute(new Route(src,dest,cost));
-					src = c;
-				}
-					
-				if (c.getName() == destName)
-					dest = c;
-			}
-			if (addDest)
-				cities.add(dest);
+			
+			City src = getCity(srcName);
 			if (src == null) {
 				src = new City(srcName);
-				if (dest == null) {
-					dest = new City(destName);
-					cities.add(dest);
-				}
-				src.addRoute(new Route(src,dest,cost));
-				cities.add(src);
+				addCity(src);
 			}
+				
+			City dest = getCity(destName);
+			if (dest == null) {
+				dest = new City(destName);
+				addCity(dest);
+			}
+				
+			src.addRoute(new Route(src,dest,cost));
 		}
 		this.origin = origin;
 	}
+	
+	public FlightMap() {}
 	
 	public void setOrigin(char c) {
 		this.origin = c;
@@ -63,6 +44,18 @@ public class FlightMap {
 	
 	public char getOrigin() {
 		return this.origin;
+	}
+	
+	public void addCity(City city) {
+		cities.add(city);
+	}
+	
+	public City getCity(char name) {
+		for (City c : cities) {
+			if (name == c.getName())
+				return c;
+		}
+		return null;
 	}
 	
 	public void computeRoutesFromOrigin() {
