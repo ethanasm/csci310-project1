@@ -10,18 +10,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TestRoute {
-	
+	;
 	private City c1;
 	private City c2;
-	private City c3;
 	private Route testRoute;
 
 	@Before
 	public void setup() {
 		c1 = new City('A');
 		c2 = new City('B');
-		c3 = new City('C');
-		testRoute = new Route(c1, c2, 500);
+		testRoute = new Route(c2, 500);
 	}
 	
 	@Test
@@ -31,8 +29,8 @@ public class TestRoute {
 	
 	@Test
 	public void testRouteSetDest() {
-		testRoute.setDest(c3);
-		assertEquals(c3, testRoute.getDest());
+		testRoute.setDest(c1);
+		assertEquals(c1, testRoute.getDest());
 	}
 	
 	@Test
@@ -45,16 +43,4 @@ public class TestRoute {
 		testRoute.setCost(1000);
 		assertEquals(1000, testRoute.getCost());
 	}
-	
-	@Test
-	public void testRoutesGetSrc() {
-		assertEquals(c1, testRoute.getSrc());
-	}
-	
-	@Test
-	public void testRoutesSetSrc() {
-		testRoute.setSrc(c3);
-		assertEquals(c3, testRoute.getSrc());
-	}
-	
 }

@@ -72,4 +72,12 @@ public class City implements Comparable<City> {
 		return adj;
 	}
 	
+	public Route getRoute(char dest) {
+		for (Route r : adj) {
+			if (r.getDest().getName() == dest)
+				return r;
+		}
+		return null;
+	}
+	
 }

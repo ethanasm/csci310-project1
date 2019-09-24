@@ -15,17 +15,20 @@
 		<pathelement location="${build.dir}"/>
  	</path>
 	
+	
 	<target name="init" description="setup project directories">
 		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${doc.dir}" />
 	</target>
 	
-	<target name="compile" depends="init" description="com[pile java sources" >
+	
+	<target name="compile" depends="init" description="compile java sources" >
 		<javac srcdir="${source.dir}" destdir="${build.dir}" includeantruntime="false">
 			<classpath refid="classpath.test"/>
 		</javac>
 	</target>
+	
 	
 	<target name="doc" depends="init" description="generate documentation">
 		<javadoc destdir="${doc.dir}">
@@ -39,6 +42,7 @@
 		</javadoc>
 	</target>
 	
+	
 	<target name="clean" description="clean up the workspace">
 		<delete dir="${dist.dir}" />
 		<delete dir="${build.dir}" />
@@ -48,9 +52,11 @@
 		</delete>
 	</target>
 	
+	
 	<target name="dist" depends="compile" description="generate the distribution jar">
         <jar destfile="${dist.dir}/Project1.jar" basedir="${build.dir}" />
     </target>
+	
 	
 	<target name="test" depends="compile" description="test all junit tests">
 	    <junit printsummary="on" haltonfailure="yes" fork="true">

@@ -23,7 +23,7 @@ public class TestCity {
 		c1.setVisited(false);
 		c2.setVisited(true);
 		c1.setPred(c2);
-		c2.addRoute(new Route(c2,c1,300));
+		c2.addRoute(new Route(c1,300));
 	}
 	
 	@Test
@@ -77,12 +77,18 @@ public class TestCity {
 	
 	@Test
 	public void testCityAddRoute() {
-		c1.addRoute(new Route(c1,c2,200));
+		c1.addRoute(new Route(c2,200));
 		assertEquals(1, c1.getRoutes().size());
 	}
 	
 	@Test
 	public void testCityGetRoutes() {
 		assertEquals(1, c2.getRoutes().size());
+	}
+	
+	@Test
+	public void testCityGetRoute() {
+		assertEquals(c1, c2.getRoute('A').getDest());
+		assertEquals(null, c2.getRoute('B'));
 	}
 }

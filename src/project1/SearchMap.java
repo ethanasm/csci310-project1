@@ -46,7 +46,7 @@ public class SearchMap {
 		return fm;
 	}
 	
-	private static void writeToFile(List<List<City>> routes, String filename, FlightMap fm) {
+	private static void writeToFile(ArrayList<ArrayList<City>> routes, String filename, FlightMap fm) {
 		PrintWriter pw = null;
 		try {
 			File file = new File(filename);
@@ -80,7 +80,7 @@ public class SearchMap {
 		
 		FlightMap fm = readFile(args[0]);
 		fm.computeRoutesFromCity(fm.getOrigin());
-		List<List<City>> routes = fm.getAllShortestPaths();
+		ArrayList<ArrayList<City>> routes = fm.getAllShortestPaths();
 		writeToFile(routes, args[1], fm);
 	}
 }
