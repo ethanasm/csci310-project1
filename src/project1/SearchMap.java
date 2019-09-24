@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SearchMap {
 	
-	private static FlightMap readFile(String filename) {
+	public static FlightMap readFile(String filename) {
 		List<String> routes = new ArrayList<String>();
 		char origin = 0;
 		BufferedReader br = null;
@@ -46,7 +46,7 @@ public class SearchMap {
 		return fm;
 	}
 	
-	private static void writeToFile(ArrayList<ArrayList<City>> routes, String filename, FlightMap fm) {
+	public static void writeToFile(ArrayList<ArrayList<City>> routes, String filename, FlightMap fm) {
 		PrintWriter pw = null;
 		try {
 			File file = new File(filename);
@@ -66,6 +66,7 @@ public class SearchMap {
 		} catch (FileNotFoundException fnfe) {
 			System.out.println("The file " + filename + " could not be found.");
 		} finally {
+			pw.flush();
 			if (pw != null) {
 				pw.close();
 			}

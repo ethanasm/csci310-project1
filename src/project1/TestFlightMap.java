@@ -63,6 +63,11 @@ public class TestFlightMap {
 	}
 	
 	@Test
+	public void testFlightMapGetCities() {
+		assertEquals(6, testFm.getCities().size());
+	}
+	
+	@Test
 	public void testFlightMapSetRoutes() {
 		City cityA = testFm.getCity('A');
 		City cityB = testFm.getCity('B');

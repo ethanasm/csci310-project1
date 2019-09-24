@@ -38,6 +38,10 @@ public class FlightMap {
 		return null;
 	}
 	
+	public ArrayList<City> getCities() {
+		return cities;
+	}
+	
 	
 	public void setRoutes(List<String> routes) {
 		for (String s : routes) {
