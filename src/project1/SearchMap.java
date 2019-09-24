@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SearchMap {
 	
-	private static FlightMap parseFile(String filename) {
+	private static FlightMap readFile(String filename) {
 		List<String> routes = new ArrayList<String>();
 		char origin = 0;
 		BufferedReader br = null;
@@ -40,7 +40,10 @@ public class SearchMap {
 			} 
 			
 		}
-		return new FlightMap(routes, origin);
+		FlightMap fm = new FlightMap();
+		fm.setOrigin(origin);
+		fm.setRoutes(routes);
+		return fm;
 	}
 	
 	private static void writeToFile(List<List<City>> routes, String filename, FlightMap fm) {
@@ -75,8 +78,8 @@ public class SearchMap {
 			throw new IllegalArgumentException("Two command line arguments required");
 		}
 		
-		FlightMap fm = parseFile(args[0]);
-		fm.computeRoutesFromOrigin();
+		FlightMap fm = readFile(args[0]);
+		fm.computeRoutesFromCity(fm.getOrigin());
 		List<List<City>> routes = fm.getAllShortestPaths();
 		writeToFile(routes, args[1], fm);
 	}

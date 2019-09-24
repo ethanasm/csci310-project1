@@ -1,3 +1,10 @@
+/*	Author: Ethan Smith
+ * 	Project: CSCI310 Project 1	
+ * 	Description: This class represents directed edges between individual cities within
+ *  a larger graph. Data includes the source and destination cities, and the cost (or
+ *  edge weight) to get from the source to destination. 
+ */
+
 package project1;
 
 public class Route {
@@ -7,7 +14,7 @@ public class Route {
 	
 	Route(City src, City dest, int cost) {
 		this.setSrc(src);
-		this.dest = dest;
+		this.setDest(dest);
 		this.setCost(cost);
 	}
 

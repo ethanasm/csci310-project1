@@ -10,8 +10,28 @@ public class FlightMap {
 	private char origin;
 	private ArrayList<City> cities;
 	
+
+	public void setOrigin(char c) {
+		this.origin = c;
+	}
 	
-	public FlightMap(List<String> routes, char origin) {
+	public char getOrigin() {
+		return this.origin;
+	}
+	
+	public void addCity(City city) {
+		cities.add(city);
+	}
+	
+	public City getCity(char name) {
+		for (City c : cities) {
+			if (name == c.getName())
+				return c;
+		}
+		return null;
+	}
+	
+	public void setRoutes(List<String> routes) {
 		cities = new ArrayList<City>();
 		for (String s : routes) {
 			String[] route = s.split(" ");
@@ -33,37 +53,16 @@ public class FlightMap {
 				
 			src.addRoute(new Route(src,dest,cost));
 		}
-		this.origin = origin;
 	}
 	
-	public FlightMap() {}
-	
-	public void setOrigin(char c) {
-		this.origin = c;
-	}
-	
-	public char getOrigin() {
-		return this.origin;
-	}
-	
-	public void addCity(City city) {
-		cities.add(city);
-	}
-	
-	public City getCity(char name) {
-		for (City c : cities) {
-			if (name == c.getName())
-				return c;
-		}
-		return null;
-	}
-	
-	public void computeRoutesFromOrigin() {
+	public boolean computeRoutesFromCity(char cityName) {
 		City city = null;
 		for (City c : cities) {
-			if (c.getName() == origin)
+			if (c.getName() == cityName)
 				city = c;
 		}
+		if (city == null)
+			return false;
 		city.setCost(0);
 		PriorityQueue<City> pq = new PriorityQueue<>();
 		pq.add(city);
@@ -84,6 +83,7 @@ public class FlightMap {
 			}
 			next.setVisited(true);
 		}
+		return true;
 	}
 	
 	public List<List<City>> getAllShortestPaths() {
