@@ -5,28 +5,65 @@
 	</description>
 	
 	<property name="source.dir" location="src"/>
+	<property name="dist.dir" location="dist"/>
 	<property name="build.dir" location="bin"/>
 	<property name="doc.dir" location="doc"/>
 	
+	<path id="classpath.test">
+	    <pathelement location="junit-4.13-beta-3.jar"/>
+		<pathelement location="hamcrest-core-1.3.jar"/>
+		<pathelement location="${build.dir}"/>
+ 	</path>
+	
 	<target name="init" description="setup project directories">
+		<mkdir dir="${dist.dir}" />
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${doc.dir}" />
 	</target>
 	
-	<target name="compile" depends="init" description="com[pile java sources">
-		<javac srcdir="${source.dir}" destdir="${build.dir}" />
+	<target name="compile" depends="init" description="com[pile java sources" >
+		<javac srcdir="${source.dir}" destdir="${build.dir}" includeantruntime="false">
+			<classpath refid="classpath.test"/>
+		</javac>
 	</target>
 	
 	<target name="doc" depends="init" description="generate documentation">
-		<javadoc sourcepath="${source.dir}" destdir="${doc.dir}" />
+		<javadoc destdir="${doc.dir}">
+			<classpath refid="classpath.test"/>
+			<fileset dir="${source.dir}">
+				<exclude name="${source.dir}/project1/TestCity.java" />
+				<exclude name="${source.dir}/project1/TestRoute.java" />
+				<exclude name="${source.dir}/project1/TestFlightMap.java" />
+				<exclude name="${source.dir}/project1/TestSearchMap.java" />
+			</fileset>
+		</javadoc>
 	</target>
 	
 	<target name="clean" description="clean up the workspace">
+		<delete dir="${dist.dir}" />
 		<delete dir="${build.dir}" />
 		<delete dir="${doc.dir}" />
 		<delete>
 			<fileset defaultexcludes="no" dir="${source.dir}" includes="**/*~" />
 		</delete>
 	</target>
+	
+	<target name="dist" depends="compile" description="generate the distribution jar">
+        <jar destfile="${dist.dir}/Project1.jar" basedir="${build.dir}" />
+    </target>
+	
+	<target name="test" depends="compile" description="test all junit tests">
+	    <junit printsummary="on" haltonfailure="yes" fork="true">
+	        <classpath>
+	        	<path refid="classpath.test"/>
+	      		<pathelement location="${source.dir}" />
+	        </classpath>
+	        <formatter type="brief" usefile="false" />
+	        <batchtest>
+	            <fileset dir="${source.dir}" includes="**/Test*.java" />
+	        </batchtest>
+	    </junit>
+	  </target>
+
 	
 </project>
