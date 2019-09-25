@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"project1","l":"City"},{"p":"project1","l":"FlightMap"},{"p":"project1","l":"Route"},{"p":"project1","l":"SearchMap"},{"p":"project1","l":"TestCity"},{"p":"project1","l":"TestFlightMap"},{"p":"project1","l":"TestRoute"},{"p":"project1","l":"TestSearchMap"}]

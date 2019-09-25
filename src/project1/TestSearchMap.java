@@ -1,3 +1,7 @@
+/*	Author: Ethan Smith
+ * 	Project: CSCI310 Project 1
+ * 	Description: Test methods for SearchMap class.
+ */
 package project1;
 
 import static org.junit.Assert.assertEquals;

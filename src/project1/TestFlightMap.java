@@ -1,3 +1,7 @@
+/*	Author: Ethan Smith
+ * 	Project: CSCI310 Project 1
+ * 	Description: Test methods for FlightMap class.
+ */
 package project1;
 
 import static org.junit.Assert.assertEquals;
@@ -24,8 +28,6 @@ public class TestFlightMap {
 				origin = c;
 			
 		}
-		
-		
 		
 		ArrayList<String> routes = new ArrayList<String>();
 		routes.add("A C 200");

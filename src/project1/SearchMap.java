@@ -1,3 +1,11 @@
+/*	Author: Ethan Smith
+ * 	Project: CSCI310 Project 1	
+ * 	Description: This class reads from an input file containing directed, weighted edges
+ * 	between cities, as well as an origin city. It creates a FlightMap which stores the
+ * 	graph of cities and routes. After using the compute shortest path function in
+ * 	FlightMap and retrieving the paths, it writes them to an output file.
+ */
+
 package project1;
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +19,11 @@ import java.util.List;
 
 public class SearchMap {
 	
+	
+	/*	Reads from a file containing information about edges in the FlightMap graph
+	 * 	and uses the setRoutes function in FlightMap to store them. Returns this
+	 * 	FlightMap object.
+	 */
 	public static FlightMap readFile(String filename) {
 		List<String> routes = new ArrayList<String>();
 		char origin = 0;
@@ -46,21 +59,31 @@ public class SearchMap {
 		return fm;
 	}
 	
+	
+	/*	Writes a formatted list of all the shortest cost paths computed from the origin to
+	 * 	an output file.
+	 */
 	public static void writeToFile(ArrayList<ArrayList<City>> routes, String filename, FlightMap fm) {
 		PrintWriter pw = null;
 		try {
 			File file = new File(filename);
 			pw = new PrintWriter(file);
 			pw.printf("%-18s %-26s %-12s%n", "Destination", "Flight route from " + fm.getOrigin() , "Total Cost");
+			
 			for (List<City> l : routes) {
+				// if city not reached by graph algorithm, don't print
 				if (l.get(l.size() - 1).getCost() == Integer.MAX_VALUE)
-					continue;	
+					continue;
+				
+				// else get the path from origin 
 				String s = "";
 				for (int i = 0; i < l.size(); i++) {
 					s += l.get(i).getName();
 					if (i + 1 != l.size())
 						s += ", ";
 				}
+				
+				// print the formatted city name, path, and cost of path
 				pw.printf("%-18s %-26s %-12s%n", l.get(l.size() - 1).getName(), s, "$" + l.get(l.size() - 1).getCost());
 			}
 		} catch (FileNotFoundException fnfe) {
@@ -73,6 +96,10 @@ public class SearchMap {
 		}
 	}
 	
+	
+	/* Uses the filenames supplied at command line to read from a list of routes and
+	 * output the shortest cost paths from the origin to an output file.
+	 */
 	public static void main(String[] args) {
 		
 		if (args.length != 2) {
